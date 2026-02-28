@@ -416,7 +416,7 @@ app.post("/api/emergency", async (req, res) => {
 
 import { initVectorDB, ingestKnowledge } from "./rag";
 
-app.listen(port, async () => {
+app.listen(Number(port), "0.0.0.0", async () => {
   console.log(`Server is running on port ${port}`);
 
   // Initialize RAG Knowledge Base
