@@ -355,6 +355,8 @@ const generateAdvice = (flags: string[]) => {
 
 import { generateAIResponse } from "./src/ai/ollamaService";
 
+import { retrieveContext } from "./rag";
+
 app.post('/api/ai', async (req, res) => {
   try {
     const { message } = req.body;
@@ -363,12 +365,35 @@ app.post('/api/ai', async (req, res) => {
       return res.status(400).json({ error: "Message required" });
     }
 
-    const aiReply = await generateAIResponse(message);
+    // 1. Retrieve Context from ChromaDB
+    const context = await retrieveContext(message);
 
-    return res.json({ reply: aiReply });
+    // 2. Prepare Prompt
+    const fullPrompt = context
+      ? `Context Information:\n${context}\n\nUser Question: ${message}\n\nPlease answer the user's question concisely based on the context above.`
+      : message;
+
+    // 3. Generate AI Response
+    try {
+      const aiReply = await generateAIResponse(fullPrompt);
+      return res.json({ reply: aiReply });
+    } catch (ollamaErr) {
+      // Fallback: If Ollama fails (not running, model not pulled), return the raw RAG context as a helpful degraded state
+      console.error("Ollama Generation Failed:", ollamaErr);
+      if (context && context !== "RAG Vector Store offline." && context !== "Failed to fetch contextual knowledge.") {
+        return res.json({
+          reply: `AI Model (Ollama) is currently unreachable. However, based on our medical knowledge base, here is relevant information:\n\n${context}`
+        });
+      } else {
+        return res.status(500).json({
+          error: "AI generation failed. Ensure Ollama is running and the model (e.g., phi3) is pulled, or check RAG initialization."
+        });
+      }
+    }
 
   } catch (error) {
-    return res.status(500).json({ error: "AI generation failed" });
+    console.error("AI Route Error:", error);
+    return res.status(500).json({ error: "AI generation encountered a server error" });
   }
 });
 
@@ -389,8 +414,18 @@ app.post("/api/emergency", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+import { initVectorDB, ingestKnowledge } from "./rag";
+
+app.listen(port, async () => {
   console.log(`Server is running on port ${port}`);
+
+  // Initialize RAG Knowledge Base
+  try {
+    await initVectorDB();
+    await ingestKnowledge();
+  } catch (err) {
+    console.error("Failed to initialize RAG:", err);
+  }
 });
 
 export default app;
