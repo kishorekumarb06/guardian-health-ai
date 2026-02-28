@@ -1,5 +1,5 @@
 export async function askAI(message: string) {
-    const response = await fetch("http://localhost:3000/api/chat", {
+    const response = await fetch(`http://${window.location.hostname}:3000/api/chat`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

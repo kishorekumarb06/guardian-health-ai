@@ -12,7 +12,7 @@ export default function AdminPanel() {
     const [users, setUsers] = useState<User[]>([]);
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/users")
+        fetch(`http://${window.location.hostname}:3000/api/users`)
             .then(res => res.json())
             .then(data => setUsers(data))
             .catch(err => console.error(err));

@@ -16,7 +16,7 @@ const HomeDashboard = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/health")
+    fetch(`http://${window.location.hostname}:3000/api/health`)
       .then(res => res.json())
       .then(data => console.log("Backend Connected:", data))
       .catch(err => console.error("Backend Error:", err));

@@ -33,7 +33,7 @@ const AIInsightPage = () => {
         setIsTyping(true);
 
         try {
-            const res = await fetch(`http://localhost:3000/api/ai`, {
+            const res = await fetch(`http://${window.location.hostname}:3000/api/ai`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: userMessage })
