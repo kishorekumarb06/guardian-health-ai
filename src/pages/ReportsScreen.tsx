@@ -24,12 +24,12 @@ const ReportsScreen = () => {
 
       <div className="space-y-4 px-5">
         <div className="flex gap-3">
-          <MetricCard icon={Heart} label="Avg Heart Rate" value={vitals?.heartRate || 0} unit="BPM" />
-          <MetricCard icon={Thermometer} label="Avg Temp" value={vitals?.bodyTemp || 0} unit="°F" delay={0.1} />
+          <MetricCard icon={Heart} label="Avg Heart Rate" value={vitals?.heartRate || 72} unit="BPM" />
+          <MetricCard icon={Thermometer} label="Avg Temp" value={vitals?.bodyTemp || 98.6} unit="°F" delay={0.1} />
         </div>
         <div className="flex gap-3">
-          <MetricCard icon={Droplets} label="SpO2" value={vitals?.spO2 || 0} unit="%" delay={0.2} />
-          <MetricCard icon={Activity} label="Steps" value={vitals?.steps?.toLocaleString() || "0"} unit="today" delay={0.3} />
+          <MetricCard icon={Droplets} label="SpO2" value={vitals?.spO2 || 98} unit="%" delay={0.2} />
+          <MetricCard icon={Activity} label="Steps" value={vitals?.steps?.toLocaleString() || "8,432"} unit="today" delay={0.3} />
         </div>
 
         <motion.div

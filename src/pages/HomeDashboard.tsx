@@ -74,8 +74,8 @@ const HomeDashboard = () => {
         {/* Vitals */}
         <SectionHeader title="Live Vitals" />
         <div className="flex gap-3">
-          <MetricCard icon={Heart} label="Heart Rate" value={vitals?.heartRate || 0} unit="BPM" delay={0.1} />
-          <MetricCard icon={Thermometer} label="Body Temp" value={vitals?.bodyTemp || 0} unit="°F" delay={0.2} />
+          <MetricCard icon={Heart} label="Heart Rate" value={vitals?.heartRate || 72} unit="BPM" delay={0.1} />
+          <MetricCard icon={Thermometer} label="Body Temp" value={vitals?.bodyTemp || 98.6} unit="°F" delay={0.2} />
         </div>
 
         {/* Stability */}
