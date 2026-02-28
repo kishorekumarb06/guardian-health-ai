@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           String          @default("USER")
+  phone          String?
+  bloodType      String?
+  allergies      String?
+  emergencyNotes String?
+  contacts       Contact[]
+  vitals         VitalSign[]
+  healthHistory  HealthEvent[]
+  medicalRecords MedicalRecord[]
+  telemetry      Telemetry?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Contact {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name               String
+  relationship       String
+  email              String
+  avatar             String?
+  autoCall           Boolean  @default(false)
+  sosSms             Boolean  @default(false)
+  appAlerts          Boolean  @default(false)
+  isEmergencyContact Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model VitalSign {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  heartRate     Int?
+  bodyTemp      Float?
+  spO2          Int?
+  bloodPressure String?
+  steps         Int?
+  riskLevel     String   @default("LOW") // LOW, MODERATE, HIGH
+  recordedAt    DateTime @default(now())
+}
+
+model HealthEvent {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date        DateTime
+  description String
+  status      String   // normal, warning, critical
+  createdAt   DateTime @default(now())
+}
+
+model MedicalRecord {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  date        DateTime
+  provider    String
+  documentUrl String?
+  createdAt   DateTime @default(now())
+}
+
+model Telemetry {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transmission Int
+  location     String
+  heartRate    Int
+  spO2         Int
+  ambientAudio String?
+  updatedAt    DateTime @updatedAt
+}
+
